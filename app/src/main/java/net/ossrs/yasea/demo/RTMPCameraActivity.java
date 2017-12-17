@@ -105,13 +105,7 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
         // face camera by default instead.
         mPublisher.switchCameraFace((mPublisher.getCamraId() + 1) % Camera.getNumberOfCameras());
         mPublisher.startCamera();
-
-        Toast.makeText(getApplicationContext(), "rtmpUrl: " + rtmpUrl,
-                Toast.LENGTH_LONG).show();
-
-
-
-
+        
         btnBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
