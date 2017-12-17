@@ -80,7 +80,7 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
 
         // setRequestedOrientation method call below added by Christopher Pedersen while
         // developing the StreamTeam RTMP fork of YASEA
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Set Device Orientation To Landscape
+        // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Set Device Orientation To Landscape
 
         // restore data.
         // TWO LINES OF CODE BELOW COMMENTED OUT FOR DEBUGGING PURPOSES
