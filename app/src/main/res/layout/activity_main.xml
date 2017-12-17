@@ -1,61 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context="net.ossrs.yasea.demo.MainActivity">
 
-    <net.ossrs.yasea.SrsCameraView
+    <LinearLayout
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/glsurfaceview_camera"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="publish"
-        android:id="@+id/publish"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="175dp"
+        android:layout_marginBottom="1dp">
+        <TextView
+            android:id="@+id/streamTeamLogo"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            android:textSize="75sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StreamTeam"/>
+    </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="switch"
-        android:id="@+id/swCam"
-        android:layout_alignBottom="@+id/publish"
-        android:layout_toRightOf="@+id/publish" />
+        android:layout_marginTop="-8dp"
+        android:layout_marginBottom="12dp">
+        <TextView
+            android:id="@+id/streamTeamSubHeader"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RTMP Camera"/>
+    </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="record"
-        android:id="@+id/record"
-        android:layout_alignBottom="@+id/publish"
-        android:layout_toRightOf="@id/swCam" />
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/streamLiveToYouTubeBtn"
+            android:backgroundTint="@color/colorLedWhite"
+            android:textColor="@color/colorBrimstone"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stream Live to YouTube"/>
+    </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="soft encoder"
-        android:id="@+id/swEnc"
-        android:layout_alignBottom="@+id/publish"
-        android:layout_toRightOf="@id/record"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/streamLiveToOtherServiceBtn"
+            android:backgroundTint="@color/colorLedWhite"
+            android:textColor="@color/colorBrimstone"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stream to RTMP Server"/>
+    </LinearLayout>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14dp"
-        android:id="@+id/url"
-        android:textColor="@color/accent_material_light" />
-
-</RelativeLayout>
+</LinearLayout>
