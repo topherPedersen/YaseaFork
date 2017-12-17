@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "net.ossrs.yasea.demo"
+        applicationId "com.phponacid.yasea.demo"
         minSdkVersion 21
         targetSdkVersion 22
         versionCode 1
