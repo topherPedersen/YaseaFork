@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     android:background="@color/colorBrimstone"
     tools:context="net.ossrs.yasea.demo.YouTubeActivity">
 
