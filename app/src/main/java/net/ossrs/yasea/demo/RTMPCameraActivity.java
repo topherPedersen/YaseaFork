@@ -35,8 +35,6 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
 
     private static final String TAG = "Yasea";
 
-    public static int onPauseCount = 0;
-
     private Button btnBroadcast;
     private Button btnSwitchCamera;
 
@@ -107,6 +105,9 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
         // face camera by default instead.
         mPublisher.switchCameraFace((mPublisher.getCamraId() + 1) % Camera.getNumberOfCameras());
         mPublisher.startCamera();
+
+        Toast.makeText(getApplicationContext(), "rtmpUrl: " + rtmpUrl,
+                Toast.LENGTH_LONG).show();
 
 
 
@@ -224,22 +225,6 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
     protected void onPause() {
         super.onPause();
         mPublisher.pauseRecord();
-
-        // bug fix: This activity is actually paused once while launching.
-        // When the RTMPCameraActivity is launch the activity lifecycle goes as follows: onResume, onPause, onDestroy, onResume
-        // We want to kill the application if the camera activity is exited by the user to prevent a known bug that causes
-        // the application to crash if the camera activity is left and then launched again.
-        // Therefore, we kill the application on the SECOND onPause.
-        // NOTE: Not 100% Sure That This Bug Fix Works
-        // The App Runs Fine on the Emulator, No Problem, But Occassionally Crashes on my Moto G4
-        // ** UNSURE WHETHER BUG IS HARDWARE OR SOFTWARE RELATED **
-        // MORE NOTES: Bug Could Also Have To Do With Continually Installing & Re-installing the app
-        // on my physical device.
-        onPauseCount++;
-        if (onPauseCount == 2) {
-            super.finish();
-        }
-        // END BUG FIX
     }
 
     @Override
