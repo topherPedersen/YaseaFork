@@ -51,6 +51,11 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // setRequestedOrientation method call below added by Christopher Pedersen while
+        // developing the StreamTeam RTMP fork of YASEA
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Set Device Orientation To Landscape
+
+
         Intent intent = getIntent();
         String serverUrlExtra = null;
         String streamNameKeyExtra = null;
@@ -77,10 +82,6 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_rtmp_camera);
-
-        // setRequestedOrientation method call below added by Christopher Pedersen while
-        // developing the StreamTeam RTMP fork of YASEA
-        // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Set Device Orientation To Landscape
 
         // restore data.
         // TWO LINES OF CODE BELOW COMMENTED OUT FOR DEBUGGING PURPOSES

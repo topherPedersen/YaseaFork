@@ -48,7 +48,11 @@ public class SrsCameraView extends GLSurfaceView implements GLSurfaceView.Render
     private ByteBuffer mGLPreviewBuffer;
     private int mCamId = -1;
     private int mPreviewRotation = 90;
-    private int mPreviewOrientation = Configuration.ORIENTATION_PORTRAIT;
+    /*
+    *     PLEASE NOTE: MUST CHANGE Configuration.ORIENTATION_PORTRAIT to ORIENTATION_LANDSCAPE
+    *     For StreamTeam RTMP to Display Properly!!!
+    */
+    private int mPreviewOrientation = Configuration.ORIENTATION_LANDSCAPE;
 
     private Thread worker;
     private final Object writeLock = new Object();
