@@ -1,9 +1,10 @@
 package net.ossrs.yasea.demo;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class YouTubeActivity extends AppCompatActivity {
+public class YouTubeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

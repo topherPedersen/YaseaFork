@@ -1,5 +1,6 @@
 package net.ossrs.yasea.demo;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -28,7 +29,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.util.Random;
 
-public class RTMPCameraActivity extends AppCompatActivity implements RtmpHandler.RtmpListener,
+public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpListener,
                         SrsRecordHandler.SrsRecordListener, SrsEncodeHandler.SrsEncodeListener {
 
     private static final String TAG = "Yasea";
