@@ -1,9 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBrimstone"
     tools:context="net.ossrs.yasea.demo.OtherServiceActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/streamingServerUrlEditText"
+            android:textSize="20sp"
+            android:textColor="@color/colorLedWhite"
+            android:textColorHint="@color/colorLedWhite"
+            android:layout_marginLeft="43dp"
+            android:layout_marginRight="43dp"
+            android:hint="Enter RTMP Server URL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/streamLiveToOtherServiceBtn2"
+            android:backgroundTint="@color/colorLedWhite"
+            android:textColor="@color/colorBrimstone"
+            android:textSize="20sp"
+            android:text="Stream to RTMP Server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

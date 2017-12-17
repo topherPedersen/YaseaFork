@@ -1,6 +1,7 @@
 package net.ossrs.yasea.demo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -34,13 +35,14 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
 
     private static final String TAG = "Yasea";
 
-    private Button btnPublish;
-    private Button btnSwitchCamera;
-    private Button btnRecord;
-    private Button btnSwitchEncoder;
+    public static int onPauseCount = 0;
 
-    private SharedPreferences sp;
-    private String rtmpUrl = "rtmp://ossrs.net/" + getRandomAlphaString(3) + '/' + getRandomAlphaDigitString(5);
+    private Button btnBroadcast;
+    private Button btnSwitchCamera;
+
+    // line below commented out during debugging
+    // private SharedPreferences sp;
+    private String rtmpUrl = "abcdefg"; // placeholder value
     private String recPath = Environment.getExternalStorageDirectory().getPath() + "/test.mp4";
 
     private SrsPublisher mPublisher;
@@ -49,59 +51,82 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent intent = getIntent();
+        String serverUrlExtra = null;
+        String streamNameKeyExtra = null;
+
+        if (intent.hasExtra("SERVER_URL_EXTRA")) {
+            serverUrlExtra = intent.getStringExtra("SERVER_URL_EXTRA");
+        }
+
+        if (intent.hasExtra("STREAM_NAME_KEY_EXTRA")) {
+            streamNameKeyExtra = intent.getStringExtra("STREAM_NAME_KEY_EXTRA");
+        }
+
+        // if the statement below is true, this activity was launched by the YouTube Activity
+        // so the rtmpUrl should be constructed by concatenating the serverUrlExtra, /, and streamNameKeyExtra
+        if (serverUrlExtra != null && streamNameKeyExtra != null) {
+            rtmpUrl = serverUrlExtra + "/" + streamNameKeyExtra;
+        }
+
+        // if the statement below is true, this activity was launched by the OtherService Activity,
+        // so the rtmpUrl should be equal to the serverUrlExtra string alone
+        if (serverUrlExtra != null && streamNameKeyExtra == null) {
+            rtmpUrl = serverUrlExtra;
+        }
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_rtmp_camera);
 
-        // response screen rotation event
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        // setRequestedOrientation method call below added by Christopher Pedersen while
+        // developing the StreamTeam RTMP fork of YASEA
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Set Device Orientation To Landscape
 
         // restore data.
+        // TWO LINES OF CODE BELOW COMMENTED OUT FOR DEBUGGING PURPOSES
+        /*
         sp = getSharedPreferences("Yasea", MODE_PRIVATE);
         rtmpUrl = sp.getString("rtmpUrl", rtmpUrl);
+        */
 
-        // initialize url.
-        final EditText efu = (EditText) findViewById(R.id.url);
-        efu.setText(rtmpUrl);
-
-        btnPublish = (Button) findViewById(R.id.publish);
+        btnBroadcast = (Button) findViewById(R.id.broadcast);
         btnSwitchCamera = (Button) findViewById(R.id.swCam);
-        btnRecord = (Button) findViewById(R.id.record);
-        btnSwitchEncoder = (Button) findViewById(R.id.swEnc);
 
         mPublisher = new SrsPublisher((SrsCameraView) findViewById(R.id.glsurfaceview_camera));
+
         mPublisher.setEncodeHandler(new SrsEncodeHandler(this));
         mPublisher.setRtmpHandler(new RtmpHandler(this));
         mPublisher.setRecordHandler(new SrsRecordHandler(this));
         mPublisher.setPreviewResolution(640, 360);
-        mPublisher.setOutputResolution(360, 640);
+        mPublisher.setOutputResolution(640, 360);
         mPublisher.setVideoHDMode();
+        // the switchCameraFace method call below was added by Christopher Pedersen while
+        // developing the StreamTeam RTMP fork of YASEA. The original YASEA app would launch
+        // the front face camera by default, so this method call was added to launch the back
+        // face camera by default instead.
+        mPublisher.switchCameraFace((mPublisher.getCamraId() + 1) % Camera.getNumberOfCameras());
         mPublisher.startCamera();
 
-        btnPublish.setOnClickListener(new View.OnClickListener() {
+
+
+
+        btnBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (btnPublish.getText().toString().contentEquals("publish")) {
-                    rtmpUrl = efu.getText().toString();
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("rtmpUrl", rtmpUrl);
-                    editor.apply();
+                if (btnBroadcast.getText().toString().contentEquals("broadcast")) {
+                    // Lines below commented out during debugging
+                    // SharedPreferences.Editor editor = sp.edit();
+                    // editor.putString("rtmpUrl", rtmpUrl);
+                    /// editor.apply();
 
                     mPublisher.startPublish(rtmpUrl);
                     mPublisher.startCamera();
 
-                    if (btnSwitchEncoder.getText().toString().contentEquals("soft encoder")) {
-                        Toast.makeText(getApplicationContext(), "Use hard encoder", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Use soft encoder", Toast.LENGTH_SHORT).show();
-                    }
-                    btnPublish.setText("stop");
-                    btnSwitchEncoder.setEnabled(false);
-                } else if (btnPublish.getText().toString().contentEquals("stop")) {
+                    btnBroadcast.setText("stop");
+                } else if (btnBroadcast.getText().toString().contentEquals("stop")) {
                     mPublisher.stopPublish();
                     mPublisher.stopRecord();
-                    btnPublish.setText("publish");
-                    btnRecord.setText("record");
-                    btnSwitchEncoder.setEnabled(true);
+                    btnBroadcast.setText("broadcast");
                 }
             }
         });
@@ -110,36 +135,6 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
             @Override
             public void onClick(View v) {
                 mPublisher.switchCameraFace((mPublisher.getCamraId() + 1) % Camera.getNumberOfCameras());
-            }
-        });
-
-        btnRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (btnRecord.getText().toString().contentEquals("record")) {
-                    if (mPublisher.startRecord(recPath)) {
-                        btnRecord.setText("pause");
-                    }
-                } else if (btnRecord.getText().toString().contentEquals("pause")) {
-                    mPublisher.pauseRecord();
-                    btnRecord.setText("resume");
-                } else if (btnRecord.getText().toString().contentEquals("resume")) {
-                    mPublisher.resumeRecord();
-                    btnRecord.setText("pause");
-                }
-            }
-        });
-
-        btnSwitchEncoder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (btnSwitchEncoder.getText().toString().contentEquals("soft encoder")) {
-                    mPublisher.switchToSoftEncoder();
-                    btnSwitchEncoder.setText("hard encoder");
-                } else if (btnSwitchEncoder.getText().toString().contentEquals("hard encoder")) {
-                    mPublisher.switchToHardEncoder();
-                    btnSwitchEncoder.setText("soft encoder");
-                }
             }
         });
     }
@@ -219,7 +214,7 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
     @Override
     protected void onResume() {
         super.onResume();
-        final Button btn = (Button) findViewById(R.id.publish);
+        final Button btn = (Button) findViewById(R.id.broadcast);
         btn.setEnabled(true);
         mPublisher.resumeRecord();
     }
@@ -228,6 +223,22 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
     protected void onPause() {
         super.onPause();
         mPublisher.pauseRecord();
+
+        // bug fix: This activity is actually paused once while launching.
+        // When the RTMPCameraActivity is launch the activity lifecycle goes as follows: onResume, onPause, onDestroy, onResume
+        // We want to kill the application if the camera activity is exited by the user to prevent a known bug that causes
+        // the application to crash if the camera activity is left and then launched again.
+        // Therefore, we kill the application on the SECOND onPause.
+        // NOTE: Not 100% Sure That This Bug Fix Works
+        // The App Runs Fine on the Emulator, No Problem, But Occassionally Crashes on my Moto G4
+        // ** UNSURE WHETHER BUG IS HARDWARE OR SOFTWARE RELATED **
+        // MORE NOTES: Bug Could Also Have To Do With Continually Installing & Re-installing the app
+        // on my physical device.
+        onPauseCount++;
+        if (onPauseCount == 2) {
+            super.finish();
+        }
+        // END BUG FIX
     }
 
     @Override
@@ -242,44 +253,20 @@ public class RTMPCameraActivity extends Activity implements RtmpHandler.RtmpList
         super.onConfigurationChanged(newConfig);
         mPublisher.stopEncode();
         mPublisher.stopRecord();
-        btnRecord.setText("record");
         mPublisher.setScreenOrientation(newConfig.orientation);
-        if (btnPublish.getText().toString().contentEquals("stop")) {
+        if (btnBroadcast.getText().toString().contentEquals("stop")) {
             mPublisher.startEncode();
         }
         mPublisher.startCamera();
     }
 
-    private static String getRandomAlphaString(int length) {
-        String base = "abcdefghijklmnopqrstuvwxyz";
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(base.length());
-            sb.append(base.charAt(number));
-        }
-        return sb.toString();
-    }
-
-    private static String getRandomAlphaDigitString(int length) {
-        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(base.length());
-            sb.append(base.charAt(number));
-        }
-        return sb.toString();
-    }
 
     private void handleException(Exception e) {
         try {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             mPublisher.stopPublish();
             mPublisher.stopRecord();
-            btnPublish.setText("publish");
-            btnRecord.setText("record");
-            btnSwitchEncoder.setEnabled(true);
+            btnBroadcast.setText("broadcast");
         } catch (Exception e1) {
             //
         }
